@@ -42,8 +42,9 @@ options:
   -o OUTPUT, --output OUTPUT
                         Specifies output file name. (default: None)
 ```
-#### Note: 
-The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
+#### Additional Notes: 
+- The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
+- Only `.jpg` and `.png` files are currently accepted.
 <br />
 <br />
 <br />
