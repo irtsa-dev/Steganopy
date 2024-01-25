@@ -45,7 +45,7 @@ options:
 ```
 #### Additional Notes: 
 - The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
-- Only `.jpg` and `.png` files are currently accepted.
+- The following are accepted file extensions: `png`, `jpg`, `webp`, `jpeg`
 <br />
 <br />
 <br />
