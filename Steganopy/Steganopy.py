@@ -26,7 +26,7 @@ SteganopyParser.add_argument('source', help = 'Picture source location.')
 SteganopyParser.add_argument('action', help = 'Specifies whether to be encrypting or decrypting.')
 
 SteganopyParser.add_argument('-v', '--values', help = 'Values used for encryption.', default = 'rgb')
-SteganopyParser.add_argument('-i', '--information', help = 'Information to be added when encrypting is selected for "act" argument.')
+SteganopyParser.add_argument('-i', '--information', help = 'Information to be added when encrypting is selected for "action" argument.')
 SteganopyParser.add_argument('-o', '--output', help = 'Specifies output file name.')
 
 
@@ -94,9 +94,9 @@ def main():
                         p = 0
                         c += 1
 
-                    pixel = list(str(imageData[c][p]))
+                    pixel = list(str(imageData[c][Indexes[p]))
                     pixel[-1] = information[i]
-                    imageData[c][p] = int(''.join(pixel))
+                    imageData[c][Indexes[p]] = int(''.join(pixel))
                     p += 1
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Insert Information.', exception)
