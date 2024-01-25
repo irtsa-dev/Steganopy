@@ -41,7 +41,7 @@ AcceptedArguments = {
     'values' : ['r', 'g', 'b']
 }
 
-AcceptedFileExtensions = ['png', 'jpg']
+AcceptedFileExtensions = ['png', 'webp', 'jpg', 'jpeg']
 
 
 
@@ -108,7 +108,8 @@ def main():
                 
                 newImageData = []
                 for i in tqdm(range(len(imageData)), desc = 'Saving Image: '): newImageData.extend(imageData[i])
-                newImageData = Image.frombytes('RGB', (width, height), bytes(newImageData))
+                format = {3 : 'RGB', 4 : 'RGBA'}.get(len(imageData[0]))
+                newImageData = Image.frombytes(format, (width, height), bytes(newImageData))
                 newImageData.save(newImagePath)
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Save Image.', exception)
