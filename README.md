@@ -23,7 +23,7 @@ git clone https://github.com/IrtsaDevelopment/Steganopy.git
 
 ### Within the CMD/Terminal
 ```
-python Steganopy.py [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] source action
+python Steganopy.py [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] [-k KEY] source action
 ```
 <br />
 
@@ -38,9 +38,10 @@ options:
   -v VALUES, --values VALUES
                         Values used for encryption. (default: rgb)
   -i INFORMATION, --information INFORMATION
-                        Information to be added when encrypting is selected for "act" argument. (default: None)
+                        Information to be added when encrypting is selected for "action" argument. (default: None)
   -o OUTPUT, --output OUTPUT
                         Specifies output file name. (default: None)
+  -k KEY, --key KEY     Specifies key to use for xor operation. (default: None)
 ```
 #### Additional Notes: 
 - The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
