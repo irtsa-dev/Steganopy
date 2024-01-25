@@ -28,6 +28,7 @@ SteganopyParser.add_argument('action', help = 'Specifies whether to be encryptin
 SteganopyParser.add_argument('-v', '--values', help = 'Values used for encryption.', default = 'rgb')
 SteganopyParser.add_argument('-i', '--information', help = 'Information to be added when encrypting is selected for "action" argument.')
 SteganopyParser.add_argument('-o', '--output', help = 'Specifies output file name.')
+SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key to use for xor operation.')
 
 
 
@@ -81,9 +82,19 @@ def main():
             try:
                 information = []
                 for i in tqdm(range(len(Arguments['information'])), desc = 'Encoding Information: '): information.append(bin(ord(Arguments['information'][i]))[2:].zfill(8))
-                information = list(bin(len(information))[2:].zfill(16) + ''.join(information))
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Encode Information.', exception)
+
+
+            if Arguments['key'] is not None:
+                if Arguments['key'] < 2: return 'Argument "key" is too small of a value.'
+                try:
+                    information = list(''.join(information))
+                    key = expandKey(Arguments['key'], len(information))
+                    for i in tqdm(range(len(key)), desc = 'Encrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
+                except KeyboardInterrupt: return False
+                except Exception as exception: return ('Could not Encrypt Information.', exception)
+            information = list(bin(int(len(information) / 8))[2:].zfill(16) + ''.join(information))
 
 
             try:
@@ -137,6 +148,15 @@ def main():
                 for i in tqdm(range(length * 8), desc = 'Collecting Necessary Values: '): information.append(newImageData[16 + i])
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Collect Necessary Values.', exception)
+
+
+            if Arguments['key'] is not None:
+                if Arguments['key'] < 2: return 'Argument "key" is too small of a value.'
+                try:
+                    key = expandKey(Arguments['key'], length * 8)
+                    for i in tqdm(range(len(key)), desc = 'Decrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
+                except KeyboardInterrupt: return False
+                except Exception as exception: return ('Could not Decrypting Information.', exception)
 
 
             try:
