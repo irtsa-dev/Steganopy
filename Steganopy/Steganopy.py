@@ -41,7 +41,7 @@ AcceptedArguments = {
     'values' : ['r', 'g', 'b']
 }
 
-AcceptedFileExtensions = ['png'. 'webp', 'jpg', 'jpeg']
+AcceptedFileExtensions = ['png', 'webp', 'jpg', 'jpeg']
 
 
 
