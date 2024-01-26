@@ -15,6 +15,11 @@ from PyTermColor.Color import printColor
 def pri(x: int = 1): print('\n' * x)
 
 
+def expandKey(key: int, length: int) -> str:
+    while len(bin(key)[2:]) < length: key *= key
+    return bin(key)[2:][0:length]
+
+
 
 
 
