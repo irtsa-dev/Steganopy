@@ -11,7 +11,7 @@ from PyTermColor.Color import printColor
 
 
 
-#Functions
+#Extra Functions
 def pri(x: int = 1): print('\n' * x)
 
 
@@ -24,7 +24,7 @@ def expandKey(key: int, length: int) -> str:
 
 
 
-#Additional Declarations
+#Parser Declarations
 SteganopyParser = argparse.ArgumentParser(description="", formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 SteganopyParser.add_argument('source', help = 'Picture source location.')
@@ -41,12 +41,7 @@ SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key t
 
 #Global Variables
 Arguments = vars(SteganopyParser.parse_args())
-
-AcceptedArguments = {
-    'action' : ['e', 'encrypt', 'd', 'decrypt'],
-    'values' : ['r', 'g', 'b']
-}
-
+AcceptedArguments = {'action' : ['e', 'encrypt', 'd', 'decrypt'], 'values' : ['r', 'g', 'b']}
 AcceptedFileExtensions = ['png', 'webp', 'jpg', 'jpeg']
 
 
@@ -54,8 +49,8 @@ AcceptedFileExtensions = ['png', 'webp', 'jpg', 'jpeg']
 
 
 
-#Main Section
-def main():
+#Primary Function Section
+def primary():
     for argument in Arguments:
         if argument in AcceptedArguments:
 
@@ -99,7 +94,7 @@ def main():
                     for i in tqdm(range(len(key)), desc = 'Encrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: return False
                 except Exception as exception: return ('Could not Encrypt Information.', exception)
-            information = list(bin(int(len(information) / 8))[2:].zfill(16) + ''.join(information))
+            information = list(bin(int(len(information)))[2:].zfill(16) + ''.join(information))
 
 
             try:
@@ -158,7 +153,7 @@ def main():
             if Arguments['key'] is not None:
                 if Arguments['key'] < 2: return 'Argument "key" is too small of a value.'
                 try:
-                    key = expandKey(Arguments['key'], length * 8)
+                    key = expandKey(Arguments['key'], length)
                     for i in tqdm(range(len(key)), desc = 'Decrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: return False
                 except Exception as exception: return ('Could not Decrypting Information.', exception)
@@ -185,8 +180,9 @@ def main():
 
 
 
-if __name__ == '__main__':
-    message = main()
+#Main Function
+def main():
+    message = primary()
     if type(message) != bool: 
         if type(message) == tuple:
             printColor('\n\n' + message[0], 'red')
@@ -194,3 +190,10 @@ if __name__ == '__main__':
         else: printColor('\n\n' + message, 'red')
 
     elif not message: print('\n\nProcess Stopped')
+
+
+
+
+
+
+if __name__ == '__main__': main()
