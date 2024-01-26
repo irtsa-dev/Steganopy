@@ -1,3 +1,4 @@
+![PyPI](https://img.shields.io/pypi/v/idev-steganopy) ![Python](https://img.shields.io/pypi/pyversions/idev-steganopy)
 # **Steganopy**
 A [**python**](https://www.python.org) script for hiding text into images (**steganography**).
 <br />
@@ -9,6 +10,10 @@ A [**python**](https://www.python.org) script for hiding text into images (**ste
 With `git` [GitHub](https://github.com):
 ```
 git clone https://github.com/IrtsaDevelopment/Steganopy.git
+```
+With `pip` [PyPi](https://pypi.org/project/idev-steganopy/)
+```
+pip install idev-steganopy
 ```
 <br />
 <br />
@@ -22,8 +27,13 @@ git clone https://github.com/IrtsaDevelopment/Steganopy.git
 <br />
 
 ### Within the CMD/Terminal
+If installed with **GIT**:
 ```
 python Steganopy.py [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] [-k KEY] source action
+```
+If installed with **PIP**:
+```
+steganopy [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] [-k KEY] source action
 ```
 <br />
 
