@@ -55,7 +55,7 @@ options:
   -k KEY, --key KEY     Specifies key to use for xor operation. (default: None)
 ```
 #### Additional Notes: 
-- The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
+- The `-t` or `-f` option is necessary if the `action` argument is set to **e** or **encrypt**
 - The following are accepted file extensions: `png`, `jpg`, `webp`, `jpeg`
 <br />
 <br />
