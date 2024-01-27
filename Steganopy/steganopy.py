@@ -31,7 +31,8 @@ SteganopyParser.add_argument('source', help = 'Picture source location.')
 SteganopyParser.add_argument('action', help = 'Specifies whether to be encrypting or decrypting.')
 
 SteganopyParser.add_argument('-v', '--values', help = 'Values used for encryption.', default = 'rgb')
-SteganopyParser.add_argument('-i', '--information', help = 'Information to be added when encrypting is selected for "action" argument.')
+SteganopyParser.add_argument('-t', '--text', help = 'Text to be added when encrypting is selected for "action" argument.')
+SteganopyParser.add_argument('-f', '--file', help = 'File location of text to be added when encrypting is selected for "action" argument.')
 SteganopyParser.add_argument('-o', '--output', help = 'Specifies output file name.')
 SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key to use for xor operation.')
 
@@ -80,8 +81,14 @@ def primary():
     match Arguments['action'][0]:
         case 'e':
             try:
+                if Arguments['file'] is not None and Arguments['text'] is not None: return 'Cannot have "file" and "text" arguments both be in use.'
+
+                if Arguments['file']:
+                    if not path.isfile(Arguments['file']): return 'File not Found.'
+                    with open(Arguments['file'], 'r', errors = 'ignore') as f: Arguments['text'] = ''.join(f.readlines())
+                        
                 information = []
-                for i in tqdm(range(len(Arguments['information'])), desc = 'Encoding Information: '): information.append(bin(ord(Arguments['information'][i]))[2:].zfill(8))
+                for i in tqdm(range(len(Arguments['text'])), desc = 'Encoding Information: '): information.append(bin(ord(Arguments['text'][i]))[2:].zfill(8))
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Encode Information.', exception)
 
