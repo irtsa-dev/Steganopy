@@ -66,14 +66,17 @@ options:
 
 # Examples
 ```
-steganopy exampleimage.png e -i "test text" -v r
+steganopy exampleimage.png e -t "test text" -v r
 
 - Will only utilize the red values in the image to put the information in.
 ```
 ```
-steganopy exampleimage.png e -i "test text" -o "newname"
+steganopy exampleimage.png e -t "test text" -o "newname"
 
 - Will output the file with the name "newname" instead of the default name of the original filename with -steganopy appended to it.
+```
+```
+steganopy exampleimage.png e -f exampletext.txt
 ```
 ```
 steganopy exampleimage-steganopy.png d -v r
