@@ -77,6 +77,8 @@ steganopy exampleimage.png e -t "test text" -o "newname"
 ```
 ```
 steganopy exampleimage.png e -f exampletext.txt
+
+- Will get text from the exampletext.txt file to use.
 ```
 ```
 steganopy exampleimage-steganopy.png d -v r
