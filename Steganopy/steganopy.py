@@ -15,9 +15,19 @@ from PyTermColor.Color import printColor
 def pri(x: int = 1): print('\n' * x)
 
 
-def expandKey(key: int, length: int) -> str:
-    while len(bin(key)[2:]) < length: key *= key
-    return bin(key)[2:][0:length]
+def baseConvert(number: int, base: int):
+    if number == 0: return [0]
+    
+    digits = []
+    while number:
+        digits.append(int(number % base))
+        number //= base
+    return ''.join([str(i) for i in digits[::-1]])
+
+
+def expandKey(key: int, length: int, base: int) -> str:
+    while len(baseConvert(key, base)) < length: key *= key
+    return baseConvert(key, base)[0:length]
 
 
 
@@ -34,6 +44,7 @@ SteganopyParser.add_argument('-v', '--values', help = 'Values used for encryptio
 SteganopyParser.add_argument('-t', '--text', help = 'Text to be added when encrypting is selected for "action" argument.')
 SteganopyParser.add_argument('-f', '--file', help = 'File location of text to be added when encrypting is selected for "action" argument.')
 SteganopyParser.add_argument('-o', '--output', help = 'Specifies output file name.')
+SteganopyParser.add_argument('-e', '--encoding', help = 'Specifies the base the information is to be or is encoded in.', default = 'binary')
 SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key to use for xor operation.')
 
 
@@ -42,8 +53,11 @@ SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key t
 
 #Global Variables
 Arguments = vars(SteganopyParser.parse_args())
-AcceptedArguments = {'action' : ['e', 'encrypt', 'd', 'decrypt'], 'values' : ['r', 'g', 'b']}
-AcceptedFileExtensions = ['png', 'webp', 'jpg', 'jpeg']
+AcceptedArguments = {'action' : ('e', 'encrypt', 'd', 'decrypt'), 'values' : ('r', 'g', 'b'), 'encoding' : ('binary', 'trinary', 'quaternary', 'quinary', 'senary', 'septenary', 'octal', 'nonal')}
+AcceptedFileExtensions = ('png', 'webp', 'jpg', 'jpeg')
+EncodingFills = (8, 6, 4, 4, 4, 3, 3, 3)
+EncodingLengthFills = (16, 11, 8, 7, 7, 6, 6, 6)
+EncodingBases = (2, 3, 4, 5, 6, 7, 8, 9)
 
 
 
@@ -66,6 +80,9 @@ def primary():
     pri()
     if not path.isfile(Arguments['source']): return 'File not Found.'
     if Arguments['source'].split('.')[-1] not in AcceptedFileExtensions: return 'Invalid File Extension.'
+    encodingFill = EncodingFills[AcceptedArguments['encoding'].index(Arguments['encoding'])]
+    encodingLengthFill = EncodingLengthFills[AcceptedArguments['encoding'].index(Arguments['encoding'])]
+    encodingBase = EncodingBases[AcceptedArguments['encoding'].index(Arguments['encoding'])]
 
 
     try:
@@ -88,7 +105,7 @@ def primary():
                     with open(Arguments['file'], 'r', errors = 'ignore') as f: Arguments['text'] = ''.join(f.readlines())
                         
                 information = []
-                for i in tqdm(range(len(Arguments['text'])), desc = 'Encoding Information: '): information.append(bin(ord(Arguments['text'][i]))[2:].zfill(8))
+                for i in tqdm(range(len(Arguments['text'])), desc = 'Encoding Information: '): information.append(baseConvert(ord(Arguments['text'][i]), encodingBase).zfill(encodingFill))
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Encode Information.', exception)
 
@@ -97,11 +114,11 @@ def primary():
                 if Arguments['key'] < 2: return 'Argument "key" is too small of a value.'
                 try:
                     information = list(''.join(information))
-                    key = expandKey(Arguments['key'], len(information))
+                    key = expandKey(Arguments['key'], len(information), encodingBase)
                     for i in tqdm(range(len(key)), desc = 'Encrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: return False
                 except Exception as exception: return ('Could not Encrypt Information.', exception)
-            information = list(bin(int(len(information)))[2:].zfill(16) + ''.join(information))
+            information = list(baseConvert(int(len(''.join(information)) / encodingFill), encodingBase).zfill(encodingLengthFill) + ''.join(information))
 
 
             try:
@@ -151,8 +168,8 @@ def primary():
 
             try:
                 information = []
-                length = int(''.join([str(i) for i in newImageData[:16]]), 2)
-                for i in tqdm(range(length * 8), desc = 'Collecting Necessary Values: '): information.append(newImageData[16 + i])
+                length = int(''.join([str(i) for i in newImageData[:encodingLengthFill]]), encodingBase)
+                for i in tqdm(range(length * encodingFill), desc = 'Collecting Necessary Values: '): information.append(newImageData[encodingLengthFill + i])
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Collect Necessary Values.', exception)
 
@@ -160,7 +177,7 @@ def primary():
             if Arguments['key'] is not None:
                 if Arguments['key'] < 2: return 'Argument "key" is too small of a value.'
                 try:
-                    key = expandKey(Arguments['key'], length)
+                    key = expandKey(Arguments['key'], length * encodingFill, encodingBase)
                     for i in tqdm(range(len(key)), desc = 'Decrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: return False
                 except Exception as exception: return ('Could not Decrypting Information.', exception)
@@ -168,8 +185,8 @@ def primary():
 
             try:
                 decodedInformation = []
-                for i in tqdm(range(0, len(information), 8), desc = 'Decoding Information: '):
-                    char = int(''.join(information[i:i + 8]), 2)
+                for i in tqdm(range(0, len(information), encodingFill), desc = 'Decoding Information: '):
+                    char = int(''.join(information[i:i + encodingFill]), encodingBase)
                     decodedInformation.append(chr(char))
             except KeyboardInterrupt: return False
             except Exception as exception: return ('Could not Decode Information.', exception)
