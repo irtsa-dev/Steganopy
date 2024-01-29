@@ -16,9 +16,9 @@ def pri(x: int = 1): print('\n' * x)
 
 
 def baseConvert(number: int, base: int):
-    if number == 0: return [0]
-    
+    if number == 0: return '0'
     digits = []
+    
     while number:
         digits.append(int(number % base))
         number //= base
