@@ -112,7 +112,7 @@ def primary():
                         p = 0
                         c += 1
 
-                    pixel = list(str(imageData[c][Indexes[p]))
+                    pixel = list(str(imageData[c][Indexes[p]]))
                     pixel[-1] = information[i]
                     imageData[c][Indexes[p]] = int(''.join(pixel))
                     p += 1
@@ -176,10 +176,20 @@ def primary():
 
 
             pri()
-            printColor('Information Found: ', 'green', end = '')
-            print(''.join(decodedInformation))
+            if Arguments['output'] is not None:
+                try:
+                    outputPath = imagePath + '\\' + Arguments['output'] + '.txt'
+                    with open(outputPath, 'w+', errors = 'ignore') as f: f.write(''.join(decodedInformation))
+                    printColor('Information Output: ', 'green', end = '')
+                    print(outputPath)
+                except KeyboardInterrupt: return False
+                except Exception as exception: return ('Could not Save Information to Output File.', exception)
+            else:
+                printColor('Information Found: ', 'green', end = '')
+                print(''.join(decodedInformation))
         
 
+    
     return True
 
 
