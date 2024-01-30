@@ -30,7 +30,7 @@ SteganopyParser.add_argument('-k', '--key', type = int,  help = 'Specifies key t
 
 
 #Functions
-def Error(errorType: str, value: str):
+def error(errorType: str, value: str):
     print('\n')
     printColor(errorType, 'red', end = ': ')
     printColor(value, 'lightyellow')
@@ -49,7 +49,7 @@ def baseConvert(number: int, base: int):
 
 
 def expandKey(key: int, length: int, base: int) -> str:
-    if key < 2: Error('ValueError', 'Argument "key" must be greater than 2.')
+    if key < 2: error('ValueError', 'Argument "key" must be greater than 2.')
     while len(baseConvert(key, base)) < length: key *= key
     return baseConvert(key, base)[0:length]
 
@@ -60,16 +60,16 @@ def testArgument(argument: str, value: str):
     if argument in AcceptedArguments and value:
         if argument == 'values':
             for value in list(value):
-                if value not in AcceptedArguments[argument]: Error('KeyError', 'Invalid value for argument "values".')
+                if value not in AcceptedArguments[argument]: error('KeyError', 'Invalid value for argument "values".')
         else:
-            if value not in AcceptedArguments[argument]: Error('KeyError', 'Invalid value for argument "' + argument + '".')
+            if value not in AcceptedArguments[argument]: error('KeyError', 'Invalid value for argument "' + argument + '".')
 
 
 
 def imageInformation(filePath: str) -> bool:
     AcceptedFileExtensions = ('png', 'webp', 'jpg', 'jpeg')
-    if not path.isfile(filePath): Error('FileNotFoundError', filePath)
-    if filePath.split('.')[-1] not in AcceptedFileExtensions: Error('ValueError', 'Invalid File Extension')
+    if not path.isfile(filePath): error('FileNotFoundError', filePath)
+    if filePath.split('.')[-1] not in AcceptedFileExtensions: error('ValueError', 'Invalid File Extension')
 
     iname = path.splitext(path.basename(filePath))[0]
     ipath = path.dirname(path.abspath(filePath))
@@ -95,7 +95,7 @@ def main():
     print('\n')
     Arguments = vars(SteganopyParser.parse_args())
     for argument in Arguments: testArgument(argument, Arguments[argument])
-    if Arguments['text'] is not None and Arguments['file'] is not None: Error('ValueError', 'Cannot have "file" and "text" arguments both be in use.')
+    if Arguments['text'] is not None and Arguments['file'] is not None: error('ValueError', 'Cannot have "file" and "text" arguments both be in use.')
     Indexes = [{'r' : 0, 'g' : 1, 'b' : 2}.get(i) for i in Arguments['values']]
 
     fileTest = imageInformation(Arguments['source'])
@@ -109,7 +109,7 @@ def main():
         imageData = list(imageData.getdata())
         for i in tqdm(range(len(imageData)), desc = 'Preparing Image: '): imageData[i] = list(imageData[i])
     except KeyboardInterrupt: raise KeyboardInterrupt
-    except Exception as exception: Error('RuntimeError', 'Could not Prepare Image.\n' + str(exception))
+    except Exception as exception: error('RuntimeError', 'Could not Prepare Image.\n' + str(exception))
 
 
     
@@ -117,13 +117,13 @@ def main():
         case 'e':
             try:
                 if Arguments['file']:
-                    if not path.isfile(Arguments['file']): Error('FileNotFoundError', Arguments['file'])
+                    if not path.isfile(Arguments['file']): error('FileNotFoundError', Arguments['file'])
                     with open(Arguments['file'], 'r', errors = 'ignore') as f: Arguments['text'] = ''.join(f.readlines())
                         
                 information = []
                 for i in tqdm(range(len(Arguments['text'])), desc = 'Encoding Information: '): information.append(baseConvert(ord(Arguments['text'][i]), encodingBase).zfill(encodingFill))
             except KeyboardInterrupt: raise KeyboardInterrupt
-            except Exception as exception: Error('RuntimeError', 'Could not Encode Information.\n' + str(exception))
+            except Exception as exception: error('RuntimeError', 'Could not Encode Information.\n' + str(exception))
 
 
             if Arguments['key'] is not None:
@@ -133,7 +133,7 @@ def main():
                     
                     for i in tqdm(range(len(key)), desc = 'Encrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: raise KeyboardInterrupt
-                except Exception as exception: Error('RuntimeError', 'Could not Encrypt Information.\n' + str(exception))
+                except Exception as exception: error('RuntimeError', 'Could not Encrypt Information.\n' + str(exception))
             information = list(baseConvert(int(len(''.join(information)) / encodingFill), encodingBase).zfill(encodingLengthFill) + ''.join(information))
 
 
@@ -148,7 +148,7 @@ def main():
                     imageData[c][Indexes[p]] = int(''.join(pixel))
                     p += 1
             except KeyboardInterrupt: raise KeyboardInterrupt
-            except Exception as exception: Error('RuntimeError', 'Could not Insert Information.\n' + str(exception))
+            except Exception as exception: error('RuntimeError', 'Could not Insert Information.\n' + str(exception))
 
 
             try:
@@ -178,7 +178,7 @@ def main():
                     pixel = imageData[i]
                     for v in Indexes: newImageData.append(list(str(pixel[v]))[-1])
             except KeyboardInterrupt: raise KeyboardInterrupt
-            except Exception as exception: Error('RuntimeError', 'Could not Extract Values.\n' + str(exception))
+            except Exception as exception: error('RuntimeError', 'Could not Extract Values.\n' + str(exception))
 
 
             try:
@@ -186,7 +186,7 @@ def main():
                 length = int(''.join([str(i) for i in newImageData[:encodingLengthFill]]), encodingBase)
                 for i in tqdm(range(length * encodingFill), desc = 'Collecting Necessary Values: '): information.append(newImageData[encodingLengthFill + i])
             except KeyboardInterrupt: raise KeyboardInterrupt
-            except Exception as exception: Error('RuntimeError', 'Could not Collect Necessary Values.\n' + str(exception))
+            except Exception as exception: error('RuntimeError', 'Could not Collect Necessary Values.\n' + str(exception))
 
 
             if Arguments['key']:
@@ -194,14 +194,14 @@ def main():
                     key = expandKey(Arguments['key'], length * encodingFill, encodingBase)
                     for i in tqdm(range(len(key)), desc = 'Decrypting Information: '): information[i] = str(int(information[i]) ^ int(key[i]))
                 except KeyboardInterrupt: raise KeyboardInterrupt
-                except Exception as exception: Error('RuntimeError', 'Could not Decrypt Information.\n' + str(exception))
+                except Exception as exception: error('RuntimeError', 'Could not Decrypt Information.\n' + str(exception))
 
 
             try:
                 decodedInformation = []
                 for i in tqdm(range(0, len(information), encodingFill), desc = 'Decoding Information: '): decodedInformation.append(chr(int(''.join(information[i:i + encodingFill]), encodingBase)))
             except KeyboardInterrupt: raise KeyboardInterrupt
-            except Exception as exception: Error('RuntimeError', 'Could not Decode Information.\n' + str(exception))
+            except Exception as exception: error('RuntimeError', 'Could not Decode Information.\n' + str(exception))
 
 
             print('\n)
@@ -212,7 +212,7 @@ def main():
                     printColor('Information Output: ', 'green', end = '')
                     print(outputPath)
                 except KeyboardInterrupt: raise KeyboardInterrupt
-                except Exception as exception: Error('RuntimeError', 'Could not Save Information to Output File.\n' + str(exception))
+                except Exception as exception: error('RuntimeError', 'Could not Save Information to Output File.\n' + str(exception))
             
                 else:
                 printColor('Information Found: ', 'green', end = '')
