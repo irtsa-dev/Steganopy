@@ -29,11 +29,11 @@ pip install idev-steganopy
 ### Within the CMD/Terminal
 If installed with **GIT**:
 ```
-python Steganopy.py [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] [-k KEY] source action
+python Steganopy.py [-h] [-v VALUES] [-t TEXT] [-f FILE] [-o OUTPUT] [-k KEY] source action
 ```
 If installed with **PIP**:
 ```
-steganopy [-h] [-v VALUES] [-i INFORMATION] [-o OUTPUT] [-k KEY] source action
+steganopy [-h] [-v VALUES] [-t TEXT] [-f FILE] [-o OUTPUT] [-k KEY] source action
 ```
 <br />
 
@@ -47,14 +47,15 @@ options:
   -h, --help            show this help message and exit
   -v VALUES, --values VALUES
                         Values used for encryption. (default: rgb)
-  -i INFORMATION, --information INFORMATION
-                        Information to be added when encrypting is selected for "action" argument. (default: None)
+  -t TEXT, --text TEXT  Text to be added when encrypting is selected for "action" argument. (default: None)
+  -f FILE, --file FILE  File location of text to be added when encrypting is selected for "action" argument. (default:
+                        None)
   -o OUTPUT, --output OUTPUT
                         Specifies output file name. (default: None)
   -k KEY, --key KEY     Specifies key to use for xor operation. (default: None)
 ```
 #### Additional Notes: 
-- The `-i` option is necessary if the `action` argument is set to **e** or **encrypt**
+- The `-t` or `-f` option is necessary if the `action` argument is set to **e** or **encrypt**
 - The following are accepted file extensions: `png`, `jpg`, `webp`, `jpeg`
 <br />
 <br />
@@ -65,17 +66,22 @@ options:
 
 # Examples
 ```
-python Steganopy.py exampleimage.png e -i "test text" -v r
+steganopy exampleimage.png e -t "test text" -v r
 
 - Will only utilize the red values in the image to put the information in.
 ```
 ```
-python Steganopy.py exampleimage.png e -i "test text" -o "newname"
+steganopy exampleimage.png e -t "test text" -o "newname"
 
 - Will output the file with the name "newname" instead of the default name of the original filename with -steganopy appended to it.
 ```
 ```
-python Steganopy.py exampleimage-steganopy.png d -v r
+steganopy exampleimage.png e -f exampletext.txt
+
+- Will get text from the exampletext.txt file to use.
+```
+```
+steganopy exampleimage-steganopy.png d -v r
 
 - When decrypting, the values used in encryption must be the same, otherwise errors may be thrown.
 ```
