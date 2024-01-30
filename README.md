@@ -52,11 +52,14 @@ options:
                         None)
   -o OUTPUT, --output OUTPUT
                         Specifies output file name. (default: None)
+  -e ENCODING, --encoding ENCODING
+                        Specifies the base the information is to be or is encoded in. (default: binary)
   -k KEY, --key KEY     Specifies key to use for xor operation. (default: None)
 ```
 #### Additional Notes: 
 - The `-t` or `-f` option is necessary if the `action` argument is set to **e** or **encrypt**
 - The following are accepted file extensions: `png`, `jpg`, `webp`, `jpeg`
+- The following are accepted encoding bases: `binary`, `trinary`, `quaternary`, `quinary`, `senary`, `septenary`, `octal`, `nonal`
 <br />
 <br />
 <br />
@@ -81,7 +84,17 @@ steganopy exampleimage.png e -f exampletext.txt
 - Will get text from the exampletext.txt file to use.
 ```
 ```
+steganopy exampleimage.png e -e trinary
+
+- Will encode the information in base 3 (trinary) instead of the default of binary.
+```
+```
 steganopy exampleimage-steganopy.png d -v r
 
 - When decrypting, the values used in encryption must be the same, otherwise errors may be thrown.
+```
+```
+steganopy exampleimage-steganopy.png d -v r -o test
+
+- When decrypting, you can also use the -o --output argument to have the information be outputed into the a text document with the specified name.
 ```
