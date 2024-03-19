@@ -82,7 +82,6 @@ options:
                         Specifies output file name.
 ```
 #### Additional Notes: 
-- The `-t` or `-f` option is necessary if the `action` argument is set to **e** or **encrypt**
 - The following are accepted file extensions: `png`, `jpg`, `webp`, `jpeg`
 - The following are accepted encoding bases: `binary`, `trinary`, `quaternary`, `quinary`, `senary`, `septenary`, `octal`, `nonal`
 <br />
