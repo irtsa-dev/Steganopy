@@ -9,7 +9,7 @@ A [**python**](https://www.python.org) script for hiding text into images (**ste
 # Installation
 With `git` [GitHub](https://github.com):
 ```
-git clone https://github.com/IrtsaDevelopment/Steganopy.git
+git clone https://github.com/irtsa-dev/Steganopy.git
 ```
 With `pip` [PyPi](https://pypi.org/project/idev-steganopy/)
 ```
