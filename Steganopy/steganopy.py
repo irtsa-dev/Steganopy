@@ -30,7 +30,7 @@ SteganoencryptParser.add_argument('-o', '--output', help = 'Specifies output fil
 SteganodecryptParser.add_argument('source', help = 'Picture source location.')
 SteganodecryptParser.add_argument('-v', '--values', help = 'Values to be used for decryption.', default = 'rgb')
 SteganodecryptParser.add_argument('-e', '--encoding', help = 'Specifies the base the information is encoded in.', default = 'binary')
-SteganodecryptParser.add_argument('-k', '--key', type = int,  help = 'Specifies key to use for xor operation.')
+SteganodecryptParser.add_argument('-k', '--key', help = 'Specifies key to use for xor operation.')
 SteganodecryptParser.add_argument('-o', '--output', help = 'Specifies output file name.')
 
 
@@ -57,7 +57,8 @@ def baseConvert(number: int, base: int):
     return ''.join([str(i) for i in digits[::-1]])
 
 
-def expandKey(key: int, length: int, base: int) -> str:
+def expandKey(key: str, length: int, base: int) -> str:
+    key = int(''.join([str(ord(i)) for i in key]))
     if key < 2: error('ValueError', 'Argument "key" must be greater than 2.')
     while len(baseConvert(key, base)) < length: key *= key
     return baseConvert(key, base)[0:length]
@@ -100,7 +101,7 @@ def getEncodingInformation(base: str):
 
 
 #Encrypt Command Function
-def Encrypt(text: str, fileTextSource: str, ValueIndexes: list, ImageInformation: list, EncodingInformation: list, key: int, outputName: str):
+def Encrypt(text: str, fileTextSource: str, ValueIndexes: list, ImageInformation: list, EncodingInformation: list, key: str, outputName: str):
     if text is not None and fileTextSource is not None: Error('ValueError', 'Cannot have "file" and "text" arguments both be in use.')
 
     validImage, imageSource, imageName, imagePath = ImageInformation
